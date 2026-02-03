@@ -7,7 +7,7 @@
 
 A full-stack web application for managing product inventory. Built to demonstrate proficiency in **Modern PHP**, **RESTful API architecture**, and **Containerization** using Docker.
 
-🔗 **Live Demo:** [Insert Your Vercel Link Here](https://your-project.vercel.app)
+🔗 **Live Demo:** [Deploy on Railway](https://railway.app) *(Add your Railway URL after deployment)*
 
 ---
 
@@ -30,11 +30,11 @@ This project uses a modern, lightweight technology stack:
     * RESTful API Implementation
 * **Database:**
     * **MySQL 8.0** (Local Development)
-    * **TiDB Cloud** (Production Database)
+    * **Railway MySQL** (Production Database - Free Tier)
 * **DevOps & Tools:**
     * **Docker & Docker Compose** (Containerization)
     * Git & GitHub (Version Control)
-    * **Vercel** (Serverless Deployment)
+    * **Railway** (Container Deployment Platform)
 
 ---
 
