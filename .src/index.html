@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Inventory Shop</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 p-10">
+
+    <div class="max-w-6xl mx-auto">
+        <h1 class="text-3xl font-bold mb-8 text-gray-800">Inventory Stock System</h1>
+
+        <div class="flex justify-end mb-6">
+            <button onclick="toggleModal(true)"
+                class="bg-green-600 text-white font-bold py-2 px-6 rounded-full shadow-lg hover:bg-green-700 transition flex items-center gap-2">
+                <span></span> Add New Product
+            </button>
+        </div>
+
+        <div id="product-modal"
+            class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex justify-center items-center backdrop-blur-sm">
+
+            <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md relative animate-fade-in-up">
+
+                <button onclick="toggleModal(false)"
+                    class="absolute top-4 right-4 text-gray-500 hover:text-red-500 text-xl font-bold">
+                    &times;
+                </button>
+
+                <h2 class="text-2xl font-bold mb-6 text-gray-800 border-b pb-2">📦 New Product</h2>
+
+                <form id="create-form" onsubmit="createNewProduct(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Product Name</label>
+                        <input type="text" id="name" required
+                            class="w-full rounded-lg border border-gray-300 p-2 focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Price</label>
+                            <input type="number" id="price" step="0.01" required
+                                class="w-full rounded-lg border border-gray-300 p-2 focus:ring-2 focus:ring-blue-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Quantity</label>
+                            <input type="number" id="quantity" required
+                                class="w-full rounded-lg border border-gray-300 p-2 focus:ring-2 focus:ring-blue-500 outline-none">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                        <textarea id="description" rows="3"
+                            class="w-full rounded-lg border border-gray-300 p-2 focus:ring-2 focus:ring-blue-500 outline-none"></textarea>
+                    </div>
+
+                    <div class="flex gap-3 pt-4">
+                        <button type="button" onclick="toggleModal(false)"
+                            class="flex-1 bg-gray-200 text-gray-800 py-2 rounded-lg hover:bg-gray-300 transition">Cancel</button>
+                        <button type="submit"
+                            class="flex-1 bg-blue-600 text-white font-bold py-2 rounded-lg hover:bg-blue-700 transition shadow-lg">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div id="product-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <p class="text-gray-500">Loading products...</p>
+        </div>
+    </div>
+
+    <script>
+        // ฟังก์ชันหลักที่จะทำงานทันทีที่เปิดเว็บ
+        async function loadProducts() {
+            try {
+                // 1. สั่งให้ไปดึงข้อมูลจาก API
+                const response = await fetch('/api/products.php');
+
+                // 2. แปลงข้อมูลที่ได้เป็น JSON (Object ของ JS)
+                const products = await response.json();
+
+                // 3. เตรียมพื้นที่ที่จะเอาของไปใส่
+                const productList = document.getElementById('product-list');
+                productList.innerHTML = ''; // เคลียร์ข้อความ Loading ออก
+
+                // 4. วนลูปสินค้าทีละชิ้น เพื่อสร้าง HTML
+                products.forEach(product => {
+                    // สร้าง HTML Card สำหรับสินค้าแต่ละชิ้น
+                    const productCard = `
+                        <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+                            <img src="${product.image_url}" alt="${product.name}" class="w-full h-48 object-cover">
+                            <div class="p-6">
+                                <h2 class="text-xl font-bold mb-2">${product.name}</h2>
+                                <p class="text-gray-600 mb-4 text-sm">${product.description}</p>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-blue-600 font-bold text-lg">฿${product.price}</span>
+                                    <span class="text-xs bg-gray-200 px-2 py-1 rounded">Stock: ${product.quantity}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    // เอา Card ไปต่อท้ายในกล่อง product-list
+                    productList.innerHTML += productCard;
+                });
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert('ไม่สามารถดึงข้อมูลได้');
+            }
+        }
+
+        // เรียกใช้งานฟังก์ชัน
+        loadProducts();
+
+        // ฟังก์ชัน เปิด/ปิด Modal
+        function toggleModal(show) {
+            const modal = document.getElementById('product-modal');
+            if (show) {
+                modal.classList.remove('hidden'); // ลบ hidden ออก เพื่อแสดง
+                modal.classList.add('flex');      // ใส่ flex เพื่อจัดกึ่งกลาง
+            } else {
+                modal.classList.add('hidden');    // ใส่ hidden เพื่อซ่อน
+                modal.classList.remove('flex');
+            }
+        }
+
+        // แก้ไขฟังก์ชันเดิม: เมื่อบันทึกสำเร็จ ให้ปิด Modal ด้วย
+        async function createNewProduct(event) {
+            event.preventDefault();
+            
+            // ... (โค้ดเก็บค่าตัวแปร เหมือนเดิม) ...
+            const productData = {
+                name: document.getElementById('name').value,
+                price: document.getElementById('price').value,
+                quantity: document.getElementById('quantity').value,
+                description: document.getElementById('description').value,
+                image_url: 'https://placehold.co/600x400/png'
+            };
+
+            try {
+                const response = await fetch('/api/create_product.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(productData)
+                });
+
+                if (response.ok) {
+                    // alert('บันทึกข้อมูลสำเร็จ!'); <-- ลบ alert ออกก็ได้ ถ้ารำคาญ
+                    document.getElementById('create-form').reset();
+                    
+                    toggleModal(false); // <--- เพิ่มบรรทัดนี้: ปิด Modal อัตโนมัติเมื่อเสร็จ
+                    
+                    loadProducts(); 
+                } else {
+                    alert('เกิดข้อผิดพลาดในการบันทึก');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+    </script>
+</body>
+
+</html>
