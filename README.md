@@ -1,13 +1,11 @@
 # 📦 Smart Inventory Management System
 
-![Project Status](https://img.shields.io/badge/status-active-success)
 ![Docker](https://img.shields.io/badge/Docker-Enabled-blue)
 ![PHP Version](https://img.shields.io/badge/PHP-8.2-777BB4)
 ![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1)
 
 A full-stack web application for managing product inventory. Built to demonstrate proficiency in **Modern PHP**, **RESTful API architecture**, and **Containerization** using Docker.
 
-🔗 **Live Demo:** [Insert Your Vercel Link Here](https://your-project.vercel.app)
 
 ---
 
